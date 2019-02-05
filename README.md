@@ -25,3 +25,6 @@ export default {
 |-----|-----|-----|
 |`index`|Path to index.html to modify.|`undefined`|
 |`prefix`|Path to prepend to chunk filenames in link tag `href` attribute.|your bundle's `dir` option|
+|`shouldPreload`|Predicate which takes a [`ChunkInfo`](https://rollupjs.org/guide/en#generatebundle)|[Default predicate](#default-predicate)|
+
+<a name="default-predicate">Default Predicate</a>: `!!(isDynamicEntry || (exports.length && !facadeModuleId))`</a>
