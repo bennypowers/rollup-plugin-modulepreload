@@ -1,0 +1,39 @@
+{
+  "name": "rollup-plugin-modulepreload",
+  "version": "1.0.0",
+  "description": "Rollup plugin to add modulepreload links from generated chunks.",
+  "main": "index.js",
+  "scripts": {
+    "test": "tape -r esm test/test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bennypowers/rollup-plugin-modulepreload.git"
+  },
+  "keywords": [
+    "rollup",
+    "code splitting",
+    "performance"
+  ],
+  "eslint": {
+    "env": {
+      "node": true
+    }
+  },
+  "author": "Benny Powers <web@bennypowers.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bennypowers/rollup-plugin-modulepreload/issues"
+  },
+  "homepage": "https://github.com/bennypowers/rollup-plugin-modulepreload#readme",
+  "dependencies": {
+    "jsdom": "^13.2.0",
+    "rollup-pluginutils": "^2.3.3"
+  },
+  "devDependencies": {
+    "esm": "^3.2.0",
+    "mock-fs": "^4.8.0",
+    "rollup": "^1.1.2",
+    "tape": "^4.9.2"
+  }
+}
