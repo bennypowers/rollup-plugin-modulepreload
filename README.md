@@ -9,8 +9,10 @@ import modulepreload from 'rollup-plugin-modulepreload';
 
 export default {
   plugins: [
+    // <link rel="modulepreload" href="modules/chunk-47ckl37a.js">
+    //    -> public/index.html
     modulepreload({
-      prefix: 'public/modules',
+      prefix: 'modules',
       index: 'public/index.html',
     })
   ]
