@@ -1,13 +1,15 @@
 const { JSDOM } = require('jsdom');
 const { writeFile } = require('fs').promises;
 const path = require('path');
-
-const compose = (...fns) => fns.reduce((f, g) => (...args) => f(g(...args)));
+const compose = require('crocks/helpers/compose')
+const curry = require('crocks/helpers/curry')
+const map = require('crocks/pointfree/map')
 
 const snd = ([, snd]) => snd;
 
-const defaultShouldPreload = ({ facadeModuleId, exports, isDynamicEntry }) =>
-  !!(isDynamicEntry || (exports.length && !facadeModuleId))
+const getPath = ([x]) => x;
+
+const createLinkHref = prefix => path => `${prefix}/${path}`
 
 const createLinkElement = dom => path => {
   const link = dom.window.document.createElement('link');
@@ -15,6 +17,19 @@ const createLinkElement = dom => path => {
   link.href = path;
   return link;
 }
+
+const defaultShouldPreload = ({ facadeModuleId, exports, isDynamicEntry }) =>
+  !!(isDynamicEntry || (exports.length && !facadeModuleId))
+
+const mapAsync = curry(f => xs => Promise.all(xs.map(f)));
+
+const filterAsync = curry(f => async xs => {
+  const filterMap = await mapAsync(f, xs);
+  return xs.filter((_, index) => filterMap[index]);
+})
+
+const getPreloadChunks = async (shouldPreload, bundle) => await
+  filterAsync(compose(shouldPreload, snd), Object.entries(bundle))
 
 /**
  * Imports css as lit-element `css`-tagged constructible style sheets.
@@ -29,13 +44,20 @@ module.exports = function modulepreload({ index, prefix, shouldPreload = default
       if (format !== 'es') return;
       const dom = await JSDOM.fromFile(index);
 
-      Object.entries(bundle)
-        .filter(compose(shouldPreload, snd))
-        .map(([path]) => `${prefix || dir}/${path}`)
-        .map(createLinkElement(dom))
-        .forEach(link => dom.window.document.head.appendChild(link))
+      const createLinkFromChunk = compose(
+        createLinkElement(dom),
+        createLinkHref(prefix || dir),
+        getPath,
+      );
 
-      await writeFile(path.resolve(index), dom.serialize(), 'utf-8');
+      const appendToDom = link =>
+        dom.window.document.head.appendChild(link);
+
+      await getPreloadChunks(shouldPreload, bundle)
+        .then(map(createLinkFromChunk))
+        .then(map(appendToDom));
+
+      await writeFile(path.resolve(index), dom.serialize(), 'utf-8')
     }
   };
 }
