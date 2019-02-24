@@ -46,7 +46,7 @@ module.exports = function modulepreload({ index, prefix, shouldPreload = default
 
       const createLinkFromChunk = compose(
         createLinkElement(dom),
-        createLinkHref(prefix || dir),
+        createLinkHref((typeof prefix !== "undefined") ? prefix : dir),
         getPath,
       );
 
