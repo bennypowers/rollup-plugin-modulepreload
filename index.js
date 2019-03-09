@@ -1,5 +1,6 @@
-const { JSDOM } = require('jsdom');
+require('fs.promises');
 const { writeFile } = require('fs').promises;
+const { JSDOM } = require('jsdom');
 const path = require('path');
 const compose = require('crocks/helpers/compose')
 const curry = require('crocks/helpers/curry')
