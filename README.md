@@ -35,26 +35,56 @@ You can customize the function which determines whether or not to preload a chun
 
 It can be synchronous:
 ```js
-modulepreload({
-  index: 'public/index.html',
-  prefix: 'modules',
-  shouldPreload: ({ code }) => code.includes('INCLUDE THIS CHUNK'),
-})
+function shouldPreload({ code }) {
+  return !!code && code.includes('INCLUDE THIS CHUNK');
+}
+
+export default {
+  input: 'src/index.js',
+  plugins: [
+    modulepreload({
+      index: 'public/index.html',
+      prefix: 'modules',
+      shouldPreload,
+    })
+  ]
+}
 ```
 
 or asynchronous:
 ```js
-modulepreload({
-  index: 'public/index.html',
-  prefix: 'modules',
-  shouldPreload: ({ facadeModuleId }) =>
-    fs.promises.readFile(facadeModuleId, 'utf-8')
-      .then(file => file.includes('INCLUDE THIS CHUNK')),
-})
+import { readFile } from 'fs/promises'; // node ^14
+
+async function shouldPreload(chunk) {
+  if (!chunk.facadeModuleId)
+    return false;
+
+  const file =
+    await readFile(chunk.facadeModuleId, 'utf-8');
+
+  return file.includes('INCLUDE THIS CHUNK');
+}
+
+export default {
+  input: 'src/index.js',
+  plugins: [
+    modulepreload({
+      index: 'public/index.html',
+      prefix: 'modules',
+      shouldPreload,
+    })
+  ]
+}
 ```
 
 The <a name="default-predicate">Default Predicate</a> is :
 ```js
-const defaultShouldPreload = ({ facadeModuleId, exports, isDynamicEntry }) =>
-  !!(isDynamicEntry || (exports.length && !facadeModuleId))
+const defaultShouldPreload =
+  ({ exports, facadeModuleId, isDynamicEntry }) =>
+    !!(
+      // preload dynamically imported chunks
+      isDynamicEntry ||
+      // preload generated intermediate chunks
+      (exports && exports.length && !facadeModuleId)
+    );
 ```

@@ -27,15 +27,15 @@
   },
   "homepage": "https://github.com/bennypowers/rollup-plugin-modulepreload#readme",
   "dependencies": {
-    "crocks": "^0.11.1",
+    "crocks": "^0.12.4",
     "fs.promises": "^0.1.2",
-    "jsdom": "^13.2.0",
+    "jsdom": "^16.4.0",
     "rollup-pluginutils": "^2.4.1"
   },
   "devDependencies": {
-    "esm": "^3.2.0",
-    "mock-fs": "^4.8.0",
-    "rollup": "^1.1.2",
-    "tape": "^4.9.2"
+    "esm": "^3.2.25",
+    "mock-fs": "^4.13.0",
+    "rollup": "^2.33.1",
+    "tape": "^5.0.1"
   }
 }

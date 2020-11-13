@@ -19,8 +19,14 @@ const createLinkElement = dom => path => {
   return link;
 }
 
-const defaultShouldPreload = ({ facadeModuleId, exports, isDynamicEntry }) =>
-  !!(isDynamicEntry || (exports.length && !facadeModuleId))
+const defaultShouldPreload =
+  ({ exports, facadeModuleId, isDynamicEntry }) =>
+    !!(
+      // preload dynamically imported chunks
+      isDynamicEntry ||
+      // preload generated intermediate chunks
+      (exports && exports.length && !facadeModuleId)
+    );
 
 const mapAsync = curry(f => xs => Promise.all(xs.map(f)));
 
