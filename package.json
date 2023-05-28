@@ -1,6 +1,6 @@
 {
   "name": "rollup-plugin-modulepreload",
-  "version": "1.2.3",
+  "version": "2.0.0",
   "description": "Rollup plugin to add modulepreload links from generated chunks.",
   "main": "index.js",
   "scripts": {
