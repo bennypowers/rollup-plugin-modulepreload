@@ -4,11 +4,11 @@ type SyncOrAsyncPredicate = (chunk: RenderedChunk & { code: string, map: any  })
 
 interface Options {
    index: string;
-   prefix: string;
+   prefix?: string;
    shouldPreload?: SyncOrAsyncPredicate
 }
 
-export function modulepreload(options: Options): {
+export default function modulepreload(options: Options): {
   name: 'modulepreload',
   generateBundle: (outputOptions: OutputOptions, bundle: OutputBundle) => void
 }
